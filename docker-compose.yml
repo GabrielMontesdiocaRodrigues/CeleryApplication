@@ -1,14 +1,24 @@
 services:
+
+  redis:
+    container_name: redis
+    image: redis:alpine
+    ports:
+      - 6379:6379
+
   django:
     container_name: django
-    build: 
+    build:
       context: ./dcelery
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./dcelery:/usr/src/app
-    ports: 
+    ports:
       - 8001:8000
     environment:
       - DEBUG=1
       - SECRET_KEY=093j90j390j3930j9390jasa
       - ALLOWED_HOSTS=localhost,127.0.0.1
+
+    depends_on:
+      - redis
