@@ -3,8 +3,6 @@ services:
   redis:
     container_name: redis
     image: redis:alpine
-    ports:
-      - 6379:6379
 
   django:
     container_name: django
@@ -15,6 +13,23 @@ services:
       - ./dcelery:/usr/src/app
     ports:
       - 8001:8000
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=093j90j390j3930j9390jasa
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+
+    depends_on:
+      - redis
+
+  celery:
+    container_name: celery
+    command: celery --app=dcelery worker --loglevel=info
+    build:
+      context: ./dcelery
+    volumes:
+      - ./dcelery:/usr/src/app
+    ports:
+      - 8011:8000
     environment:
       - DEBUG=1
       - SECRET_KEY=093j90j390j3930j9390jasa
